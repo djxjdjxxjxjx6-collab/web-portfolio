@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First Commit — JavaScript from zero</title>
+<meta name="description" content="First Commit: a 10-week JavaScript course for complete beginners. Try a lesson in the browser, take the quiz, see the plan and prices.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Manrope:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0f3d3e;
+    --teal-2: #175556;
+    --sun: #ffc857;
+    --page: #f6f7f2;
+    --ink: #18201f;
+    --muted: #5d6a68;
+    --line: #dde2db;
+    --good: #2e7d4f;
+    --bad: #b5452f;
+    --display: "Fraunces", Georgia, serif;
+    --body: "Manrope", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.65 var(--body); }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: max(20px, env(safe-area-inset-left, 0px)); }
+  :focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+  .btn { display: inline-block; border: 0; border-radius: 12px; padding: 13px 22px; font: 700 15px var(--body); cursor: pointer; text-decoration: none; }
+  .btn-sun { background: var(--sun); color: var(--teal); }
+  .btn-sun:hover { background: #ffd47a; }
+  .btn-teal { background: var(--teal); color: #fff; }
+  .btn-teal:hover { background: var(--teal-2); }
+
+  .top { display: flex; justify-content: space-between; align-items: center; height: 68px; }
+  .logo { font: 800 20px var(--display); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .logo i { width: 12px; height: 12px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 4px var(--teal); display: inline-block; }
+
+  /* Hero: the editor is the hero */
+  .hero { display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; align-items: center; padding-block: 40px 80px; }
+  .hero h1 { font: 800 clamp(40px, 6vw, 72px)/1.02 var(--display); margin: 0 0 18px; color: var(--teal); letter-spacing: -0.02em; }
+  .hero p { font-size: 18px; color: var(--muted); max-width: 46ch; margin: 0 0 26px; }
+  .facts { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 28px; font-size: 14px; color: var(--muted); }
+  .facts strong { display: block; color: var(--ink); font-size: 16px; }
+
+  .editor { background: var(--teal); border-radius: 18px; overflow: hidden; color: #e7f0ee; box-shadow: 0 20px 50px rgba(15,61,62,.25); }
+  .editor .tab { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #0b3031; font: 600 13px var(--mono); color: #9fc1bf; gap: 8px; }
+  .editor textarea { display: block; width: 100%; min-height: 200px; border: 0; resize: vertical; background: transparent; color: #f2f6f5; font: 14px/1.6 var(--mono); padding: 16px; tab-size: 2; }
+  .editor textarea:focus { outline: none; }
+  .editor .out { background: #0b3031; padding: 12px 16px; font: 13px/1.6 var(--mono); min-height: 64px; white-space: pre-wrap; border-top: 1px solid #1f5b5c; }
+  .out .ok { color: #9fe3b8; } .out .err { color: #ffb4a3; } .out .dim { color: #6f9896; }
+  .editor .run { padding: 6px 12px; border-radius: 8px; font-size: 13px; }
+
+  section { padding-block: 80px; }
+  h2 { font: 800 clamp(32px, 4.5vw, 48px)/1.1 var(--display); margin: 0 0 10px; color: var(--teal); letter-spacing: -0.01em; }
+  .sub { color: var(--muted); max-width: 60ch; margin: 0 0 32px; }
+
+  /* Curriculum: a real sequence, so numbers are earned */
+  .plan { display: grid; gap: 10px; }
+  .week { background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+  .week summary { list-style: none; display: grid; grid-template-columns: 56px 1fr auto; gap: 16px; align-items: center; padding: 16px 20px; cursor: pointer; }
+  .week summary::-webkit-details-marker { display: none; }
+  .week .n { font: 800 26px var(--display); color: var(--teal); font-variant-numeric: tabular-nums; }
+  .week h3 { margin: 0; font: 700 17px var(--body); }
+  .week .len { font-size: 14px; color: var(--muted); }
+  .week[open] { border-color: var(--teal); }
+  .week ul { margin: 0; padding: 0 20px 18px 92px; color: var(--muted); display: grid; gap: 4px; }
+  .project { font-size: 13px; background: #fff4d9; color: #7a5a12; padding: 2px 8px; border-radius: 6px; margin-left: 6px; }
+
+  /* Quiz */
+  .quiz { background: #fff; border-radius: 18px; border: 1px solid var(--line); padding: 28px; max-width: 760px; }
+  .progress { height: 6px; background: var(--line); border-radius: 3px; margin-bottom: 22px; overflow: hidden; }
+  .progress i { display: block; height: 100%; background: var(--teal); transition: width .3s; }
+  .q-step { font-size: 14px; color: var(--muted); margin: 0 0 6px; }
+  .quiz h3 { font: 700 20px var(--body); margin: 0 0 14px; }
+  .quiz pre { background: var(--page); border-radius: 10px; padding: 12px 14px; font: 14px/1.6 var(--mono); overflow-x: auto; margin: 0 0 16px; }
+  .answers { display: grid; gap: 8px; }
+  .answers button { text-align: left; border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 12px 14px; font: 500 15px var(--mono); cursor: pointer; }
+  .answers button:hover:not(:disabled) { border-color: var(--teal); }
+  .answers button.right { border-color: var(--good); background: #e9f5ee; }
+  .answers button.wrong { border-color: var(--bad); background: #fbece8; }
+  .answers button:disabled { cursor: default; }
+  .explain { margin: 14px 0 0; color: var(--muted); }
+  .quiz .row { margin-top: 18px; display: flex; justify-content: flex-end; }
+  .result h3 { font: 800 32px var(--display); color: var(--teal); }
+
+  /* Pricing */
+  .switch { display: inline-flex; background: #e6ebe4; border-radius: 12px; padding: 4px; margin-bottom: 24px; }
+  .switch button { border: 0; background: transparent; padding: 9px 16px; border-radius: 9px; font: 700 14px var(--body); color: var(--muted); cursor: pointer; }
+  .switch button[aria-pressed="true"] { background: #fff; color: var(--teal); }
+  .prices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .price { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 24px; display: grid; gap: 12px; align-content: start; }
+  .price.main { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .price h3 { margin: 0; font: 700 18px var(--body); }
+  .price .amt { font: 800 40px var(--display); font-variant-numeric: tabular-nums; line-height: 1; }
+  .price .per { font-size: 14px; opacity: .75; }
+  .price ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 15px; }
+  .price.main .btn { background: var(--sun); color: var(--teal); }
+
+  /* FAQ */
+  .faq { display: grid; gap: 0; max-width: 820px; }
+  .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+  .faq details:last-child { border-bottom: 1px solid var(--line); }
+  .faq summary { font: 700 17px var(--body); cursor: pointer; }
+  .faq p { margin: 10px 0 0; color: var(--muted); max-width: 64ch; }
+
+  footer { background: var(--teal); color: #b7cfcd; padding-block: 28px; font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+  @media (max-width: 880px) {
+    .hero, .prices { grid-template-columns: 1fr; }
+    .week ul { padding-left: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#"><i aria-hidden="true"></i>First Commit</a>
+    <a class="btn btn-teal" href="#pricing">Enroll</a>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>Write your first real program this week.</h1>
+      <p>A 10-week JavaScript course for people who have never coded. Small daily lessons, a mentor who reviews every project, and a portfolio of five working apps at the end.</p>
+      <a class="btn btn-sun" href="#quiz">Take the 2-minute quiz</a>
+      <div class="facts">
+        <div><strong>10 weeks</strong>about 6 hours a week</div>
+        <div><strong>5 projects</strong>reviewed by a mentor</div>
+        <div><strong>Next cohort</strong>starts 2 November</div>
+      </div>
+    </div>
+    <div class="editor" aria-label="Try a lesson">
+      <div class="tab"><span>lesson-1.js · edit me and press Run</span><button class="btn btn-sun run" id="run">Run</button></div>
+      <textarea id="code" spellcheck="false" aria-label="Code editor">// Lesson 1: variables and a loop
+const name = "Aigerim";
+const days = ["Mon", "Wed", "Fri"];
+
+console.log(`Hi ${name}! Your study days:`);
+for (const day of days) {
+  console.log(`- ${day}, 30 minutes`);
+}
+
+console.log("Total per week:", days.length * 30, "minutes");</textarea>
+      <div class="out" id="out" aria-live="polite"><span class="dim">Output appears here.</span></div>
+    </div>
+  </div>
+</div>
+
+<section style="background:#eef1ea">
+  <div class="wrap">
+    <h2>The plan, week by week</h2>
+    <p class="sub">Each week ends with something that works. Open a week to see the lessons.</p>
+    <div class="plan" id="plan"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="wrap">
+    <h2>Is this course for you?</h2>
+    <p class="sub">Five quick questions. Wrong answers are fine, the point is to see how the course explains things.</p>
+    <div class="quiz" id="quiz-box"></div>
+  </div>
+</section>
+
+<section id="pricing" style="background:#eef1ea">
+  <div class="wrap">
+    <h2>Price</h2>
+    <p class="sub">All plans include every lesson and the community chat. If the course isn't for you, ask for a full refund in the first 14 days.</p>
+    <div class="switch" role="group" aria-label="Payment">
+      <button data-pay="once" aria-pressed="true">Pay once</button>
+      <button data-pay="monthly" aria-pressed="false">Pay monthly</button>
+    </div>
+    <div class="prices" id="prices"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div class="faq">
+      <details><summary>Do I need any experience?</summary><p>No. Week 1 starts with installing a code editor. If you can use a browser and type, you can start.</p></details>
+      <details><summary>What if I fall behind?</summary><p>Lessons stay open after each week, and you can move to the next cohort once for free.</p></details>
+      <details><summary>Which computer do I need?</summary><p>Any laptop from the last eight years, Windows, macOS or Linux. A tablet won't be enough for the projects.</p></details>
+      <details><summary>Will I get a job after this?</summary><p>Ten weeks makes you a confident beginner, not a senior developer. You'll have five projects to show and a clear idea of what to learn next.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>© 2026 First Commit</span><span>Demo project · design and code by Yuriy S.</span></div></footer>
+
+<script>
+// Mini playground: runs code with a captured console
+document.getElementById("run").onclick = () => {
+  const out = document.getElementById("out");
+  const lines = [];
+  const fakeConsole = { log: (...a) => lines.push(["ok", a.map(v => typeof v === "object" ? JSON.stringify(v) : String(v)).join(" ")]) };
+  fakeConsole.error = fakeConsole.warn = fakeConsole.info = fakeConsole.log;
+  try { new Function("console", document.getElementById("code").value)(fakeConsole); }
+  catch (e) { lines.push(["err", `${e.name}: ${e.message}`]); }
+  out.innerHTML = lines.length ? lines.map(([c, t]) => `<div class="${c}">${t.replace(/[&<>]/g, s => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[s]))}</div>`).join("") : '<span class="dim">Ran without output. Try console.log("hi").</span>';
+};
+document.getElementById("code").addEventListener("keydown", e => {
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) document.getElementById("run").click();
+});
+
+// Curriculum
+const WEEKS = [
+  ["Your editor, your first script", "3 h", ["Install VS Code and Node.js", "Variables and types", "console.log and reading errors"]],
+  ["Decisions and loops", "5 h", ["if / else", "for and while", "Project: number guessing game"], true],
+  ["Functions", "6 h", ["Parameters and return values", "Arrow functions", "Breaking a problem into steps"]],
+  ["Arrays and objects", "6 h", ["map, filter, reduce", "Objects as records", "Project: shopping list in the terminal"], true],
+  ["The browser and the DOM", "7 h", ["Selecting and changing elements", "Events", "Forms and validation"]],
+  ["Building a web page that works", "7 h", ["Layout with CSS grid and flexbox", "Project: to-do app with local storage"], true],
+  ["Talking to servers", "6 h", ["fetch and JSON", "async / await", "Handling loading and errors"]],
+  ["Working with APIs", "7 h", ["Reading API docs", "Project: weather app"], true],
+  ["Git and GitHub", "5 h", ["Commits and branches", "Pull requests", "Publishing with GitHub Pages"]],
+  ["Final project", "8 h", ["Plan, build and present your own app", "Mentor code review", "Project: your idea, deployed"], true],
+];
+document.getElementById("plan").innerHTML = WEEKS.map(([t, len, items, proj], i) => `
+  <details class="week" ${i === 0 ? "open" : ""}>
+    <summary><span class="n">${String(i + 1).padStart(2, "0")}</span><h3>${t}${proj ? '<span class="project">project</span>' : ""}</h3><span class="len">${len}</span></summary>
+    <ul>${items.map(x => `<li>${x}</li>`).join("")}</ul>
+  </details>`).join("");
+
+// Quiz
+const QUESTIONS = [
+  { q: "What will this print?", code: 'console.log(2 + "2");', a: ["4", '"22"', "NaN", "Error"], right: 1, why: "When you add a number and a string, JavaScript turns the number into text and joins them: \"22\". Week 1 covers this." },
+  { q: "Which keyword makes a variable you can't reassign?", code: "", a: ["var", "let", "const", "fixed"], right: 2, why: "const stops you from pointing the name at a new value. Use it by default, and let when the value really changes." },
+  { q: "How many times does this loop run?", code: "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}", a: ["2", "3", "4", "Forever"], right: 1, why: "i takes the values 0, 1 and 2, then i < 3 is false and the loop stops. Three runs." },
+  { q: "What does this return?", code: "[1, 2, 3].map(n => n * 2)", a: ["[1, 2, 3]", "6", "[2, 4, 6]", "undefined"], right: 2, why: "map builds a new array by running the function on each item. Week 4 is all about this." },
+  { q: "Which one gets data from a server?", code: "", a: ["fetch()", "get()", "load()", "server()"], right: 0, why: "fetch() sends a request and gives back a promise with the response. You'll use it to build the weather app in week 8." },
+];
+let qi = 0, score = 0;
+const box = document.getElementById("quiz-box");
+function renderQ() {
+  if (qi >= QUESTIONS.length) {
+    const msg = score >= 4 ? "You already have a feel for code. You'll move fast through the first weeks." : score >= 2 ? "A good start. The course fills in exactly these gaps." : "Perfect starting point. This course was written for you.";
+    box.innerHTML = `<div class="result"><p class="q-step">Your result</p><h3>${score} of ${QUESTIONS.length}</h3><p>${msg}</p><div class="row" style="justify-content:flex-start;gap:10px"><a class="btn btn-teal" href="#pricing">See prices</a><button class="btn btn-sun" id="again">Try again</button></div></div>`;
+    document.getElementById("again").onclick = () => { qi = 0; score = 0; renderQ(); };
+    return;
+  }
+  const Q = QUESTIONS[qi];
+  box.innerHTML = `
+    <div class="progress" aria-hidden="true"><i style="width:${qi / QUESTIONS.length * 100}%"></i></div>
+    <p class="q-step">Question ${qi + 1} of ${QUESTIONS.length}</p>
+    <h3>${Q.q}</h3>
+    ${Q.code ? `<pre><code>${Q.code.replace(/</g, "&lt;")}</code></pre>` : ""}
+    <div class="answers">${Q.a.map((x, i) => `<button data-i="${i}">${x}</button>`).join("")}</div>
+    <p class="explain" id="explain" aria-live="polite"></p>
+    <div class="row"><button class="btn btn-teal" id="next" hidden>${qi === QUESTIONS.length - 1 ? "See result" : "Next question"}</button></div>`;
+  box.querySelector(".answers").onclick = e => {
+    const b = e.target.closest("button"); if (!b) return;
+    const pick = +b.dataset.i;
+    box.querySelectorAll(".answers button").forEach((x, i) => { x.disabled = true; if (i === Q.right) x.classList.add("right"); });
+    if (pick === Q.right) score++; else b.classList.add("wrong");
+    document.getElementById("explain").textContent = (pick === Q.right ? "Correct. " : "Not quite. ") + Q.why;
+    const next = document.getElementById("next"); next.hidden = false; next.focus();
+  };
+  document.getElementById("next").onclick = () => { qi++; renderQ(); };
+}
+renderQ();
+
+// Pricing
+const PLANS = [
+  { name: "Self-paced", once: 45000, perks: ["All lessons and quizzes", "Community chat", "Certificate"] },
+  { name: "With mentor", once: 120000, perks: ["Everything in Self-paced", "Code review on all 5 projects", "Weekly group call"], main: true },
+  { name: "One-to-one", once: 240000, perks: ["Everything in With mentor", "Six private 1-hour sessions", "Help with your CV and GitHub"] },
+];
+let pay = "once";
+const fmt = n => n.toLocaleString("ru-RU") + " ₸";
+function renderPrices() {
+  document.getElementById("prices").innerHTML = PLANS.map(p => {
+    const monthly = Math.ceil(p.once * 1.08 / 3 / 100) * 100;
+    return `<div class="price ${p.main ? "main" : ""}">
+      <h3>${p.name}</h3>
+      <div><span class="amt">${fmt(pay === "once" ? p.once : monthly)}</span></div>
+      <span class="per">${pay === "once" ? "one payment" : "× 3 months, " + fmt(monthly * 3) + " in total"}</span>
+      <ul>${p.perks.map(x => `<li>${x}</li>`).join("")}</ul>
+      <button class="btn ${p.main ? "" : "btn-teal"}" data-plan="${p.name}">Choose ${p.name.toLowerCase()}</button>
+    </div>`;
+  }).join("");
+}
+document.querySelector(".switch").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  pay = b.dataset.pay;
+  document.querySelectorAll(".switch button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  renderPrices();
+};
+document.getElementById("prices").addEventListener("click", e => {
+  const b = e.target.closest("button[data-plan]"); if (!b) return;
+  b.textContent = "Seat reserved for 24 hours";
+});
+renderPrices();
+</script>
+</body>
+</html>
