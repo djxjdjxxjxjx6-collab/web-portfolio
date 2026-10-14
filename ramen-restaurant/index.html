@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sumi Ramen Bar — Almaty</title>
+<meta name="description" content="Sumi Ramen Bar: slow-simmered broth, hand-pulled noodles. Browse the menu, build your order and book a table.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1b1e2b;
+    --ink-2: #252a3b;
+    --paper: #efe9dd;
+    --muted: #a8a397;
+    --gold: #e8b04b;
+    --chili: #c8442f;
+    --line: rgba(239, 233, 221, 0.14);
+    --display: "Shippori Mincho", "Times New Roman", serif;
+    --body: "Zen Kaku Gothic New", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--ink); color: var(--paper); font: 16px/1.65 var(--body); }
+  a { color: inherit; }
+  img { max-width: 100%; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: max(20px, env(safe-area-inset-left, 0px)); }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  header.top { position: sticky; top: 0; z-index: 10; background: rgba(27, 30, 43, 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+  .logo { font-family: var(--display); font-weight: 800; font-size: 22px; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+  .logo span.kanji { color: var(--chili); font-size: 26px; }
+  nav.links { display: flex; gap: 24px; font-size: 15px; }
+  nav.links a { text-decoration: none; color: var(--muted); }
+  nav.links a:hover { color: var(--paper); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; padding: 12px 22px; font: 700 15px var(--body); cursor: pointer; text-decoration: none; transition: transform .15s, background .15s; }
+  .btn-gold { background: var(--gold); color: var(--ink); }
+  .btn-gold:hover { background: #f1c06a; }
+  .btn-ghost { background: transparent; color: var(--paper); border: 1px solid var(--line); }
+  .btn-ghost:hover { border-color: var(--paper); }
+  .btn:active { transform: scale(.97); }
+
+  /* Hero: the bowl is the hero */
+  .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding-block: 72px 56px; }
+  .hero h1 { font-family: var(--display); font-weight: 800; font-size: clamp(44px, 7vw, 84px); line-height: 1.02; margin: 0 0 20px; letter-spacing: -0.01em; text-wrap: balance; }
+  .hero p.lead { font-size: 18px; color: var(--muted); max-width: 46ch; margin: 0 0 28px; }
+  .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hours { margin-top: 32px; display: flex; gap: 28px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+  .hours strong { display: block; color: var(--paper); font-size: 15px; }
+  .bowl { position: relative; aspect-ratio: 1; max-width: 460px; justify-self: center; width: 100%; }
+  .bowl svg { width: 100%; height: 100%; }
+  .steam path { stroke: var(--paper); stroke-width: 3; fill: none; stroke-linecap: round; opacity: .5; animation: rise 3.2s ease-in-out infinite; }
+  .steam path:nth-child(2) { animation-delay: .8s; }
+  .steam path:nth-child(3) { animation-delay: 1.6s; }
+  @keyframes rise { 0% { transform: translateY(8px); opacity: 0; } 40% { opacity: .55; } 100% { transform: translateY(-18px); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .steam path { animation: none; opacity: .4; } html { scroll-behavior: auto; } }
+
+  section { padding-block: 72px; border-top: 1px solid var(--line); }
+  h2 { font-family: var(--display); font-weight: 700; font-size: clamp(32px, 4.5vw, 48px); margin: 0 0 8px; line-height: 1.1; }
+  .sub { color: var(--muted); margin: 0 0 32px; max-width: 60ch; }
+
+  /* Menu */
+  .menu-layout { display: grid; grid-template-columns: 1fr 320px; gap: 40px; align-items: start; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .chip { border: 1px solid var(--line); background: transparent; color: var(--paper); border-radius: 999px; padding: 8px 16px; font: 500 14px var(--body); cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+  .diet { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+  .diet label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .diet input { accent-color: var(--gold); width: 16px; height: 16px; }
+  .dishes { display: grid; gap: 0; }
+  .dish { display: grid; grid-template-columns: 1fr auto; gap: 6px 20px; padding: 20px 0; border-bottom: 1px dashed var(--line); }
+  .dish h3 { margin: 0; font-family: var(--display); font-size: 21px; font-weight: 700; }
+  .dish .jp { color: var(--muted); font-size: 14px; margin-left: 8px; font-family: var(--body); font-weight: 400; }
+  .dish p { margin: 0; color: var(--muted); font-size: 15px; grid-column: 1; }
+  .dish .price { font-weight: 700; font-size: 17px; font-variant-numeric: tabular-nums; align-self: start; }
+  .tags { grid-column: 1; display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--ink-2); color: var(--muted); }
+  .tag.hot { color: #f2a08f; }
+  .add { grid-column: 2; grid-row: 2 / span 2; align-self: end; justify-self: end; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--gold); background: transparent; color: var(--gold); font-size: 22px; cursor: pointer; line-height: 1; }
+  .add:hover { background: var(--gold); color: var(--ink); }
+  .empty { color: var(--muted); padding: 24px 0; }
+
+  .order { position: sticky; top: 88px; background: var(--ink-2); border-radius: 18px; padding: 24px; }
+  .order h3 { margin: 0 0 4px; font-family: var(--display); font-size: 24px; }
+  .order .hint { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  .order ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .order li { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; font-size: 15px; }
+  .qty { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; }
+  .qty button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--paper); cursor: pointer; }
+  .totals { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; display: grid; gap: 4px; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .totals div { display: flex; justify-content: space-between; }
+  .totals .grand { font-weight: 700; font-size: 19px; margin-top: 6px; }
+  .order .btn { width: 100%; margin-top: 18px; }
+  .order .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* Booking */
+  .booking { display: grid; grid-template-columns: .9fr 1.1fr; gap: 48px; }
+  .booking .info p { color: var(--muted); }
+  .booking .info address { font-style: normal; margin-top: 24px; line-height: 1.8; }
+  form.book { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field { display: grid; gap: 6px; font-size: 14px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { color: var(--muted); }
+  input, select, textarea { font: 16px var(--body); color: var(--paper); background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; width: 100%; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
+  .slots { display: flex; flex-wrap: wrap; gap: 8px; }
+  .slot { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--paper); cursor: pointer; font: 500 14px var(--body); font-variant-numeric: tabular-nums; }
+  .slot[aria-pressed="true"] { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+  .slot:disabled { opacity: .3; text-decoration: line-through; cursor: not-allowed; }
+  .error { color: #f2a08f; font-size: 13px; min-height: 1em; }
+  .confirm { grid-column: 1 / -1; background: var(--ink-2); border-left: 3px solid var(--gold); padding: 16px 18px; border-radius: 8px; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 32px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); background: var(--paper); color: var(--ink); padding: 12px 20px; border-radius: 999px; font-weight: 700; font-size: 14px; opacity: 0; transition: .25s; pointer-events: none; z-index: 20; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 900px) {
+    .hero, .menu-layout, .booking { grid-template-columns: 1fr; }
+    .bowl { max-width: 320px; order: -1; }
+    .order { position: static; }
+    nav.links { display: none; }
+  }
+  @media (max-width: 520px) { form.book { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><span class="kanji">墨</span> Sumi Ramen Bar</a>
+    <nav class="links" aria-label="Main">
+      <a href="#menu">Menu</a><a href="#book">Book a table</a><a href="#visit">Visit</a>
+    </nav>
+    <a class="btn btn-gold" href="#book">Book a table</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>Broth simmered for eighteen hours.</h1>
+      <p class="lead">Tonkotsu, shoyu and a miso that changes with the season. Noodles are pulled in the morning, eggs are marinated overnight, and the kitchen closes when the pot is empty.</p>
+      <div class="cta">
+        <a class="btn btn-gold" href="#menu">See the menu</a>
+        <a class="btn btn-ghost" href="#book">Reserve for tonight</a>
+      </div>
+      <div class="hours">
+        <div><strong>Tue–Sun</strong>12:00–23:00</div>
+        <div><strong>Monday</strong>Broth day, closed</div>
+        <div><strong>Walk-ins</strong>Bar seats only</div>
+      </div>
+    </div>
+    <div class="bowl" aria-hidden="true">
+      <svg viewBox="0 0 400 400">
+        <g class="steam" transform="translate(0,0)">
+          <path d="M150 120c-14-20 14-34 0-56"/>
+          <path d="M200 112c-14-20 14-34 0-56"/>
+          <path d="M250 120c-14-20 14-34 0-56"/>
+        </g>
+        <ellipse cx="200" cy="200" rx="160" ry="44" fill="#c8442f"/>
+        <path d="M40 200c0 100 72 156 160 156s160-56 160-156z" fill="#c8442f"/>
+        <path d="M40 200c0 100 72 156 160 156s160-56 160-156z" fill="#000" opacity=".18"/>
+        <ellipse cx="200" cy="200" rx="146" ry="36" fill="#d9a35c"/>
+        <path d="M80 204c30-8 60 8 90 0s60 8 90 0 60 8 60 8" stroke="#f3dd9b" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M96 214c30-8 60 8 90 0s60 8 90 0 50 6 50 6" stroke="#f3dd9b" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="250" cy="194" rx="30" ry="14" fill="#fff6e3"/>
+        <ellipse cx="250" cy="194" rx="15" ry="8" fill="#e8b04b"/>
+        <ellipse cx="160" cy="190" rx="34" ry="12" fill="#8a4a2b"/>
+        <path d="M128 190c10-6 54-6 64 0" stroke="#b56d43" stroke-width="3" fill="none"/>
+        <rect x="190" y="176" width="22" height="34" rx="3" fill="#1f3326" transform="rotate(-18 200 190)"/>
+        <circle cx="300" cy="206" r="5" fill="#6aa84f"/><circle cx="290" cy="198" r="4" fill="#6aa84f"/><circle cx="110" cy="206" r="4" fill="#6aa84f"/>
+        <rect x="250" y="120" width="8" height="150" rx="4" fill="#3b2a1e" transform="rotate(28 254 195)"/>
+        <rect x="266" y="118" width="8" height="150" rx="4" fill="#3b2a1e" transform="rotate(34 270 193)"/>
+      </svg>
+    </div>
+  </div>
+
+  <section id="menu">
+    <div class="wrap">
+      <h2>Menu</h2>
+      <p class="sub">Add dishes to build a pickup order. Prices in tenge, service included.</p>
+      <div class="menu-layout">
+        <div>
+          <div class="controls" role="group" aria-label="Category">
+            <button class="chip" data-cat="all" aria-pressed="true">Everything</button>
+            <button class="chip" data-cat="ramen" aria-pressed="false">Ramen</button>
+            <button class="chip" data-cat="small" aria-pressed="false">Small plates</button>
+            <button class="chip" data-cat="drinks" aria-pressed="false">Drinks</button>
+          </div>
+          <div class="diet">
+            <label><input type="checkbox" id="f-veg"> Vegetarian</label>
+            <label><input type="checkbox" id="f-mild"> Not spicy</label>
+          </div>
+          <div class="dishes" id="dishes" aria-live="polite"></div>
+        </div>
+        <aside class="order" aria-label="Your order">
+          <h3>Your order</h3>
+          <p class="hint" id="order-hint">Nothing here yet. Tap + next to a dish.</p>
+          <ul id="order-list"></ul>
+          <div class="totals" id="totals" hidden>
+            <div><span>Subtotal</span><span id="t-sub"></span></div>
+            <div><span>Takeaway packaging</span><span id="t-pack"></span></div>
+            <div class="grand"><span>Total</span><span id="t-total"></span></div>
+          </div>
+          <button class="btn btn-gold" id="checkout" disabled>Order for pickup</button>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="book">
+    <div class="wrap booking">
+      <div class="info">
+        <h2>Book a table</h2>
+        <p>We hold 24 seats and a six-seat bar. Tables are kept for 15 minutes after the booked time. For groups larger than eight, call us.</p>
+        <address id="visit">
+          <strong>Sumi Ramen Bar</strong><br>
+          Panfilov St 98, Almaty<br>
+          +7 727 300 18 18
+        </address>
+      </div>
+      <form class="book" id="book-form" novalidate>
+        <div class="field">
+          <label for="b-name">Name</label>
+          <input id="b-name" autocomplete="name" placeholder="Aigerim">
+          <span class="error" id="e-name"></span>
+        </div>
+        <div class="field">
+          <label for="b-phone">Phone</label>
+          <input id="b-phone" type="tel" autocomplete="tel" placeholder="+7 7__ ___ __ __">
+          <span class="error" id="e-phone"></span>
+        </div>
+        <div class="field">
+          <label for="b-date">Date</label>
+          <input id="b-date" type="date">
+          <span class="error" id="e-date"></span>
+        </div>
+        <div class="field">
+          <label for="b-guests">Guests</label>
+          <select id="b-guests">
+            <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Time</label>
+          <div class="slots" id="slots" role="group" aria-label="Available times"></div>
+          <span class="error" id="e-time"></span>
+        </div>
+        <div class="field full">
+          <label for="b-note">Anything we should know?</label>
+          <textarea id="b-note" rows="3" placeholder="Allergies, a birthday, a high chair…"></textarea>
+        </div>
+        <div class="field full"><button class="btn btn-gold" type="submit">Confirm booking</button></div>
+        <div class="confirm" id="confirm" hidden></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Sumi Ramen Bar</span>
+    <span>Demo project · design and code by Yuriy S.</span>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const DISHES = [
+  { id: 1, cat: "ramen", name: "Tonkotsu", jp: "豚骨", desc: "Pork bone broth, chashu, ajitama egg, wood ear, scallion.", price: 3900, tags: [] },
+  { id: 2, cat: "ramen", name: "Shoyu", jp: "醤油", desc: "Clear chicken and dashi broth, soy tare, bamboo shoots, nori.", price: 3500, tags: [] },
+  { id: 3, cat: "ramen", name: "Red miso", jp: "赤味噌", desc: "Three-miso blend, chili oil, minced pork, corn, butter.", price: 3800, tags: ["hot"] },
+  { id: 4, cat: "ramen", name: "Garden shio", jp: "塩", desc: "Kombu and shiitake broth, charred cabbage, tofu, sesame.", price: 3300, tags: ["veg"] },
+  { id: 5, cat: "ramen", name: "Tantanmen", jp: "担々麺", desc: "Sesame broth, Sichuan pepper, bok choy, peanuts.", price: 3900, tags: ["hot"] },
+  { id: 6, cat: "small", name: "Gyoza", jp: "餃子", desc: "Six pan-fried pork dumplings, black vinegar dip.", price: 1900, tags: [] },
+  { id: 7, cat: "small", name: "Edamame", jp: "枝豆", desc: "Sea salt or garlic chili.", price: 1100, tags: ["veg"] },
+  { id: 8, cat: "small", name: "Karaage", jp: "唐揚げ", desc: "Ginger-soy fried chicken, yuzu mayo.", price: 2200, tags: [] },
+  { id: 9, cat: "small", name: "Spicy cucumber", jp: "胡瓜", desc: "Smashed cucumber, chili crisp, rice vinegar.", price: 1200, tags: ["veg", "hot"] },
+  { id: 10, cat: "drinks", name: "Iced barley tea", jp: "麦茶", desc: "Roasted barley, unsweetened.", price: 700, tags: ["veg"] },
+  { id: 11, cat: "drinks", name: "Yuzu soda", jp: "柚子", desc: "House yuzu syrup and sparkling water.", price: 1200, tags: ["veg"] },
+  { id: 12, cat: "drinks", name: "Ramune", jp: "ラムネ", desc: "Original flavour, marble bottle.", price: 1000, tags: ["veg"] },
+];
+const PACKAGING = 150; // per ramen bowl
+const fmt = n => n.toLocaleString("ru-RU") + " ₸";
+
+let cat = "all";
+const cart = new Map();
+
+function renderDishes() {
+  const veg = document.getElementById("f-veg").checked;
+  const mild = document.getElementById("f-mild").checked;
+  const list = DISHES.filter(d =>
+    (cat === "all" || d.cat === cat) &&
+    (!veg || d.tags.includes("veg")) &&
+    (!mild || !d.tags.includes("hot")));
+  const el = document.getElementById("dishes");
+  if (!list.length) { el.innerHTML = '<p class="empty">No dishes match these filters. Try turning one off.</p>'; return; }
+  el.innerHTML = list.map(d => `
+    <article class="dish">
+      <h3>${d.name}<span class="jp">${d.jp}</span></h3>
+      <span class="price">${fmt(d.price)}</span>
+      <p>${d.desc}</p>
+      <div class="tags">${d.tags.map(t => `<span class="tag ${t}">${t === "veg" ? "Vegetarian" : "Spicy"}</span>`).join("")}</div>
+      <button class="add" data-id="${d.id}" aria-label="Add ${d.name}">+</button>
+    </article>`).join("");
+}
+
+function renderOrder() {
+  const list = document.getElementById("order-list");
+  const items = [...cart.entries()].map(([id, q]) => ({ ...DISHES.find(d => d.id === id), q }));
+  document.getElementById("order-hint").hidden = items.length > 0;
+  document.getElementById("totals").hidden = !items.length;
+  document.getElementById("checkout").disabled = !items.length;
+  list.innerHTML = items.map(i => `
+    <li><span>${i.name}</span><span>${fmt(i.price * i.q)}</span>
+      <span class="qty"><button data-dec="${i.id}" aria-label="Remove one ${i.name}">−</button>${i.q}<button data-inc="${i.id}" aria-label="Add one ${i.name}">+</button></span></li>`).join("");
+  const sub = items.reduce((s, i) => s + i.price * i.q, 0);
+  const pack = items.filter(i => i.cat === "ramen").reduce((s, i) => s + i.q, 0) * PACKAGING;
+  document.getElementById("t-sub").textContent = fmt(sub);
+  document.getElementById("t-pack").textContent = fmt(pack);
+  document.getElementById("t-total").textContent = fmt(sub + pack);
+}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+document.querySelector(".controls").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  cat = b.dataset.cat;
+  document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === b));
+  renderDishes();
+});
+document.getElementById("f-veg").addEventListener("change", renderDishes);
+document.getElementById("f-mild").addEventListener("change", renderDishes);
+document.getElementById("dishes").addEventListener("click", e => {
+  const b = e.target.closest(".add"); if (!b) return;
+  const id = +b.dataset.id; cart.set(id, (cart.get(id) || 0) + 1);
+  renderOrder(); toast(`${DISHES.find(d => d.id === id).name} added`);
+});
+document.getElementById("order-list").addEventListener("click", e => {
+  const inc = e.target.dataset.inc, dec = e.target.dataset.dec;
+  if (inc) cart.set(+inc, cart.get(+inc) + 1);
+  if (dec) { const q = cart.get(+dec) - 1; q ? cart.set(+dec, q) : cart.delete(+dec); }
+  renderOrder();
+});
+document.getElementById("checkout").addEventListener("click", () => {
+  toast("Order sent. Pickup in about 20 minutes.");
+  cart.clear(); renderOrder();
+});
+
+// Booking: time slots, some already taken (demo data that depends on the date)
+const SLOTS = ["12:00","13:00","14:00","18:00","18:30","19:00","19:30","20:00","20:30","21:00","22:00"];
+let chosenSlot = null;
+const dateInput = document.getElementById("b-date");
+const today = new Date(); today.setHours(0,0,0,0);
+const iso = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+dateInput.min = iso(today);
+dateInput.value = iso(today);
+
+function renderSlots() {
+  const d = new Date(dateInput.value + "T00:00");
+  const seed = d.getDate() + d.getMonth() * 31;
+  const box = document.getElementById("slots");
+  const closed = d.getDay() === 1;
+  if (closed) { box.innerHTML = '<span class="error">Closed on Mondays. Pick another day.</span>'; chosenSlot = null; return; }
+  box.innerHTML = SLOTS.map((s, i) => {
+    const taken = (seed * (i + 3)) % 5 === 0;
+    return `<button type="button" class="slot" data-slot="${s}" ${taken ? "disabled" : ""} aria-pressed="${s === chosenSlot}">${s}</button>`;
+  }).join("");
+}
+dateInput.addEventListener("change", () => { chosenSlot = null; renderSlots(); });
+document.getElementById("slots").addEventListener("click", e => {
+  const b = e.target.closest(".slot"); if (!b || b.disabled) return;
+  chosenSlot = b.dataset.slot; renderSlots();
+});
+
+document.getElementById("book-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = document.getElementById("b-name").value.trim();
+  const phone = document.getElementById("b-phone").value.replace(/\D/g, "");
+  const errors = {
+    name: name.length < 2 ? "Enter your name." : "",
+    phone: phone.length < 10 ? "Enter a phone number with at least 10 digits." : "",
+    date: !dateInput.value ? "Choose a date." : "",
+    time: !chosenSlot ? "Choose a time." : "",
+  };
+  for (const [k, v] of Object.entries(errors)) document.getElementById("e-" + k).textContent = v;
+  if (Object.values(errors).some(Boolean)) return;
+  const guests = document.getElementById("b-guests").value;
+  const day = new Date(dateInput.value + "T00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+  const c = document.getElementById("confirm");
+  c.hidden = false;
+  c.innerHTML = `<strong>Table booked, ${name}.</strong><br>${guests} ${guests === "1" ? "guest" : "guests"} on ${day} at ${chosenSlot}. We'll text a reminder two hours before.`;
+});
+
+renderDishes(); renderOrder(); renderSlots();
+</script>
+</body>
+</html>
