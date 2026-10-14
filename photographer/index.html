@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aino Lehtinen — Photography</title>
+<meta name="description" content="Aino Lehtinen, landscape and documentary photographer. Portfolio, fine art prints and commissions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #fbfbfa;
+    --ink: #1d1d1b;
+    --grey: #6f716c;
+    --sage: #8a9a86;
+    --line: #e4e5e1;
+    --serif: "Cormorant Garamond", Georgia, serif;
+    --sans: "Karla", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.65 var(--sans); }
+  a { color: inherit; }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding-inline: max(24px, env(safe-area-inset-left, 0px)); }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+  header.site { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 24px; padding-block: 36px 28px; }
+  .name { font: 600 30px/1 var(--serif); text-decoration: none; letter-spacing: .01em; }
+  header nav { display: flex; gap: 28px; font-size: 15px; }
+  header nav a { text-decoration: none; color: var(--grey); }
+  header nav a:hover, header nav a[aria-current] { color: var(--ink); }
+
+  .intro { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding-block: 8px 48px; align-items: end; }
+  .intro h1 { font: 500 clamp(36px, 5vw, 64px)/1.08 var(--serif); margin: 0; max-width: 16ch; }
+  .intro p { color: var(--grey); max-width: 52ch; margin: 0; }
+
+  .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-block: 16px; position: sticky; top: 0; background: var(--paper); z-index: 5; }
+  .series { display: flex; gap: 22px; flex-wrap: wrap; }
+  .series button { border: 0; background: none; padding: 4px 0; font: 500 15px var(--sans); color: var(--grey); cursor: pointer; border-bottom: 1px solid transparent; }
+  .series button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+  .count { font-size: 14px; color: var(--grey); font-variant-numeric: tabular-nums; }
+
+  .gallery { columns: 3 320px; column-gap: 16px; padding-block: 8px 72px; }
+  .shot { break-inside: avoid; margin: 0 0 16px; position: relative; cursor: zoom-in; background: var(--line); }
+  .shot img { width: 100%; height: auto; transition: opacity .3s; }
+  .shot button { all: unset; display: block; cursor: zoom-in; }
+  .shot button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .shot figcaption { font-size: 13px; color: var(--grey); padding-top: 6px; background: var(--paper); }
+
+  /* Lightbox */
+  .lb { position: fixed; inset: 0; background: rgba(20,20,18,.96); display: grid; grid-template-rows: 1fr auto; z-index: 50; color: #e9e9e6; }
+  .lb[hidden] { display: none; }
+  .lb .stage { display: grid; place-items: center; padding: 56px 72px 12px; min-height: 0; }
+  .lb img { max-height: 100%; max-width: 100%; object-fit: contain; }
+  .lb .bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 24px 22px; font-size: 14px; flex-wrap: wrap; }
+  .lb .title { font: italic 500 22px var(--serif); }
+  .lb button.nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; font-size: 22px; cursor: pointer; }
+  .lb .prev { left: 16px; } .lb .next { right: 16px; }
+  .lb .close { position: absolute; top: 14px; right: 16px; border: 0; background: transparent; color: #fff; font: 500 15px var(--sans); cursor: pointer; padding: 8px; }
+  .lb .print-link { color: #fff; border: 1px solid rgba(255,255,255,.4); padding: 8px 14px; border-radius: 999px; text-decoration: none; }
+
+  section { padding-block: 72px; border-top: 1px solid var(--line); }
+  h2 { font: 500 clamp(32px, 4vw, 48px)/1.1 var(--serif); margin: 0 0 12px; }
+  .lead { color: var(--grey); max-width: 58ch; margin: 0 0 32px; }
+
+  /* Prints configurator */
+  .prints { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .preview-frame { background: #ecece8; padding: 40px; display: grid; place-items: center; min-height: 420px; }
+  .frame { background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.12); transition: width .3s, padding .3s; border: 0 solid var(--frame, transparent); }
+  .frame img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+  .opts { display: grid; gap: 22px; }
+  .prints > *, .contact > *, .intro > * { min-width: 0; }
+  .preview-frame { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .opts fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .opts legend { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+  .choice { display: flex; gap: 8px; flex-wrap: wrap; }
+  .choice label { border: 1px solid var(--line); padding: 8px 14px; cursor: pointer; font-size: 14px; }
+  .choice input { position: absolute; opacity: 0; }
+  .choice input:checked + span { font-weight: 700; }
+  .choice label:has(input:checked) { border-color: var(--ink); }
+  .choice label:has(input:focus-visible) { outline: 2px solid var(--ink); }
+  select { font: 15px var(--sans); padding: 10px 12px; border: 1px solid var(--line); background: #fff; width: 100%; }
+  .price-row { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 16px; }
+  .price-row strong { font: 600 34px var(--serif); font-variant-numeric: tabular-nums; }
+  .btn { display: inline-block; background: var(--ink); color: var(--paper); border: 0; padding: 14px 24px; font: 700 15px var(--sans); cursor: pointer; }
+  .btn:hover { background: #3a3a37; }
+  .note { font-size: 13px; color: var(--grey); }
+
+  /* Contact */
+  .contact { display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; }
+  form.inq { display: grid; gap: 14px; }
+  form.inq label { display: grid; gap: 4px; font-size: 14px; color: var(--grey); }
+  form.inq input, form.inq textarea, form.inq select { font: 16px var(--sans); padding: 12px; border: 1px solid var(--line); background: #fff; color: var(--ink); width: 100%; }
+  .err { color: #a3412c; font-size: 13px; }
+  .sent { border-left: 2px solid var(--sage); padding: 8px 14px; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px; font-size: 14px; color: var(--grey); }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  @media (max-width: 860px) {
+    .intro, .prints, .contact { grid-template-columns: 1fr; gap: 28px; }
+    header nav { gap: 16px; }
+    .lb .stage { padding: 56px 12px 12px; }
+    .lb button.nav { top: auto; bottom: 70px; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <a class="name" href="#">Aino Lehtinen</a>
+    <nav aria-label="Main"><a href="#work" aria-current="page">Work</a><a href="#prints">Prints</a><a href="#contact">Commissions</a></nav>
+  </header>
+
+  <div class="intro">
+    <h1>Long exposures of short northern days.</h1>
+    <p>I photograph landscapes and the small places people leave behind, mostly in Finland and Norway, mostly in winter. Every image here is available as an archival print.</p>
+  </div>
+
+  <div class="toolbar" id="work">
+    <div class="series" role="group" aria-label="Series">
+      <button data-s="all" aria-pressed="true">All work</button>
+      <button data-s="quiet" aria-pressed="false">Quiet places</button>
+      <button data-s="field" aria-pressed="false">Field notes</button>
+      <button data-s="commission" aria-pressed="false">Commissions</button>
+    </div>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="gallery" id="gallery"></div>
+</div>
+
+<section id="prints">
+  <div class="wrap prints">
+    <div class="preview-frame"><div class="frame" id="frame"><img id="print-img" alt="" width="800" height="600"></div></div>
+    <div>
+      <h2>Order a print</h2>
+      <p class="lead">Giclée prints on archival cotton paper, signed and numbered, limited to 30 per size. The preview updates as you choose.</p>
+      <form class="opts" id="print-form" onsubmit="return false">
+        <fieldset>
+          <legend>Photograph</legend>
+          <select id="p-photo" aria-label="Photograph"></select>
+        </fieldset>
+        <fieldset>
+          <legend>Size</legend>
+          <div class="choice">
+            <label><input type="radio" name="size" value="30x40" data-price="180" data-w="46"><span>30 × 40 cm</span></label>
+            <label><input type="radio" name="size" value="50x70" data-price="320" data-w="64" checked><span>50 × 70 cm</span></label>
+            <label><input type="radio" name="size" value="70x100" data-price="540" data-w="84"><span>70 × 100 cm</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Frame</legend>
+          <div class="choice">
+            <label><input type="radio" name="frame" value="none" data-price="0" data-c="transparent" checked><span>Unframed</span></label>
+            <label><input type="radio" name="frame" value="oak" data-price="90" data-c="#b8956a"><span>Natural oak</span></label>
+            <label><input type="radio" name="frame" value="black" data-price="80" data-c="#1d1d1b"><span>Black ash</span></label>
+          </div>
+        </fieldset>
+        <div class="price-row"><span>Total, shipping in the EU included</span><strong id="p-price"></strong></div>
+        <button class="btn" id="p-add" type="button">Request this print</button>
+        <span class="note" id="p-note">Each print ships within 10 working days.</span>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap contact">
+    <div>
+      <h2>Commissions</h2>
+      <p class="lead">I take a small number of editorial and architectural commissions each year. Tell me about the project and I'll reply within two working days.</p>
+      <p class="note">studio@ainolehtinen.fi<br>Helsinki, Finland</p>
+    </div>
+    <form class="inq" id="inq" novalidate>
+      <label>Your name<input id="i-name" autocomplete="name"></label>
+      <label>Email<input id="i-email" type="email" autocomplete="email"></label>
+      <label>Type of project
+        <select id="i-type"><option>Editorial</option><option>Architecture and interiors</option><option>Brand or campaign</option><option>Something else</option></select>
+      </label>
+      <label>Tell me about it<textarea id="i-msg" rows="5"></textarea></label>
+      <span class="err" id="i-err"></span>
+      <button class="btn" type="submit">Send enquiry</button>
+      <div class="sent" id="i-sent" hidden></div>
+    </form>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>© 2026 Aino Lehtinen</span><span>Demo project · design and code by Yuriy S. · photos via picsum.photos</span></div></footer>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="close" id="lb-close">Close (Esc)</button>
+  <div class="stage"><img id="lb-img" alt=""></div>
+  <button class="nav prev" id="lb-prev" aria-label="Previous photo">‹</button>
+  <button class="nav next" id="lb-next" aria-label="Next photo">›</button>
+  <div class="bar">
+    <div><span class="title" id="lb-title"></span> <span id="lb-meta"></span></div>
+    <div style="display:flex; gap:16px; align-items:center"><span id="lb-pos"></span><a class="print-link" href="#prints" id="lb-print">Order a print</a></div>
+  </div>
+</div>
+
+<script>
+const TITLES = ["Inari, minus 31", "The ferry that didn't come", "Salt road", "Blue hour, Lofoten", "Empty sauna", "Lake with no name", "Pines after rain", "Harbour lights", "The last cabin", "Fog over Kemi", "Paper lanterns", "North wall", "Birch study", "Tram depot", "Low sun", "Snow fence"];
+const SERIES = ["quiet", "field", "commission"];
+const PHOTOS = TITLES.map((title, i) => {
+  const portrait = i % 3 === 1;
+  return { id: i, title, series: SERIES[i % 3], w: portrait ? 800 : 1200, h: portrait ? 1100 : 800, year: 2019 + (i % 7), seed: "aino" + (i + 7) };
+});
+const src = (p, scale = 1) => `https://picsum.photos/seed/${p.seed}/${Math.round(p.w * scale)}/${Math.round(p.h * scale)}`;
+
+let filter = "all", visible = [], index = 0;
+
+function renderGallery() {
+  visible = PHOTOS.filter(p => filter === "all" || p.series === filter);
+  document.getElementById("count").textContent = `${visible.length} photographs`;
+  document.getElementById("gallery").innerHTML = visible.map((p, i) => `
+    <figure class="shot"><button data-i="${i}" aria-label="Open ${p.title}">
+      <img src="${src(p, .5)}" width="${p.w / 2}" height="${p.h / 2}" alt="${p.title}" loading="lazy">
+    </button><figcaption>${p.title}, ${p.year}</figcaption></figure>`).join("");
+}
+document.querySelector(".series").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  filter = b.dataset.s;
+  document.querySelectorAll(".series button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  renderGallery();
+});
+
+// Lightbox
+const lb = document.getElementById("lb");
+let lastFocus = null;
+function show(i) {
+  index = (i + visible.length) % visible.length;
+  const p = visible[index];
+  const img = document.getElementById("lb-img");
+  img.src = src(p, 1); img.alt = p.title;
+  document.getElementById("lb-title").textContent = p.title;
+  document.getElementById("lb-meta").textContent = ` · ${p.year}`;
+  document.getElementById("lb-pos").textContent = `${index + 1} / ${visible.length}`;
+}
+function openLb(i) { lastFocus = document.activeElement; lb.hidden = false; document.body.style.overflow = "hidden"; show(i); document.getElementById("lb-close").focus(); }
+function closeLb() { lb.hidden = true; document.body.style.overflow = ""; lastFocus?.focus(); }
+document.getElementById("gallery").addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (b) openLb(+b.dataset.i); });
+document.getElementById("lb-close").onclick = closeLb;
+document.getElementById("lb-prev").onclick = () => show(index - 1);
+document.getElementById("lb-next").onclick = () => show(index + 1);
+document.getElementById("lb-print").onclick = () => { document.getElementById("p-photo").value = visible[index].id; updatePrint(); closeLb(); };
+document.addEventListener("keydown", e => {
+  if (lb.hidden) return;
+  if (e.key === "Escape") closeLb();
+  if (e.key === "ArrowLeft") show(index - 1);
+  if (e.key === "ArrowRight") show(index + 1);
+});
+let touchX = null;
+lb.addEventListener("touchstart", e => touchX = e.touches[0].clientX, { passive: true });
+lb.addEventListener("touchend", e => { if (touchX === null) return; const dx = e.changedTouches[0].clientX - touchX; if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1)); touchX = null; });
+
+// Prints
+const sel = document.getElementById("p-photo");
+sel.innerHTML = PHOTOS.filter(p => p.w > p.h).map(p => `<option value="${p.id}">${p.title}</option>`).join("");
+function updatePrint() {
+  const p = PHOTOS[+sel.value];
+  const size = document.querySelector("input[name=size]:checked");
+  const frame = document.querySelector("input[name=frame]:checked");
+  const fr = document.getElementById("frame");
+  document.getElementById("print-img").src = src(p, .67);
+  document.getElementById("print-img").alt = p.title;
+  fr.style.width = size.dataset.w + "%";
+  fr.style.padding = frame.value === "none" ? "0" : "18px";
+  fr.style.borderWidth = frame.value === "none" ? "0" : "10px";
+  fr.style.setProperty("--frame", frame.dataset.c);
+  document.getElementById("p-price").textContent = "€" + (+size.dataset.price + +frame.dataset.price);
+}
+document.getElementById("print-form").addEventListener("input", updatePrint);
+document.getElementById("p-add").onclick = () => {
+  const p = PHOTOS[+sel.value];
+  const size = document.querySelector("input[name=size]:checked").value;
+  document.getElementById("p-note").textContent = `Request noted: “${p.title}”, ${size.replace("x", " × ")} cm. I'll confirm availability by email.`;
+};
+
+// Enquiry form
+document.getElementById("inq").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = document.getElementById("i-name").value.trim();
+  const email = document.getElementById("i-email").value.trim();
+  const msg = document.getElementById("i-msg").value.trim();
+  const err = !name ? "Please add your name." : !/^\S+@\S+\.\S+$/.test(email) ? "That email address doesn't look complete." : msg.length < 20 ? "Tell me a bit more about the project (at least 20 characters)." : "";
+  document.getElementById("i-err").textContent = err;
+  if (err) return;
+  const s = document.getElementById("i-sent");
+  s.hidden = false;
+  s.textContent = `Thank you, ${name}. Your enquiry about a ${document.getElementById("i-type").value.toLowerCase()} project is in. I'll reply to ${email} within two working days.`;
+  e.target.reset();
+});
+
+renderGallery(); updatePrint();
+</script>
+</body>
+</html>
