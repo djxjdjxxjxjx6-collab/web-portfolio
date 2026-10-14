@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Steppe.js 2026 — JavaScript conference in Almaty</title>
+<meta name="description" content="Steppe.js 2026: two days of JavaScript talks in Almaty. Agenda, personal schedule builder and tickets.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0e2a47;
+    --navy-2: #153a5f;
+    --sky: #8fd3ff;
+    --white: #ffffff;
+    --mist: #e8f1f8;
+    --coral: #ff7a6b;
+    --text: #0e2a47;
+    --muted: #5a7088;
+    --display: "Sora", system-ui, sans-serif;
+    --body: "IBM Plex Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.6 var(--body); color: var(--text); background: var(--white); }
+  a { color: inherit; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding-inline: max(20px, env(safe-area-inset-left, 0px)); }
+  :focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+  .btn { display: inline-block; border: 0; border-radius: 10px; padding: 13px 22px; font: 600 15px var(--display); cursor: pointer; text-decoration: none; }
+  .btn-sky { background: var(--sky); color: var(--navy); }
+  .btn-sky:hover { background: #b3e2ff; }
+  .btn-navy { background: var(--navy); color: var(--white); }
+  .btn-navy:hover { background: var(--navy-2); }
+
+  /* Hero */
+  .hero { background: var(--navy); color: var(--white); position: relative; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(143,211,255,.35) 1px, transparent 1px); background-size: 22px 22px; mask-image: linear-gradient(110deg, transparent 35%, #000 80%); }
+  .nav { position: relative; display: flex; justify-content: space-between; align-items: center; height: 68px; }
+  .logo { font: 800 20px var(--display); text-decoration: none; }
+  .logo span { color: var(--sky); }
+  .hero-body { position: relative; padding-block: 56px 72px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: end; }
+  .when { font: 600 15px var(--display); color: var(--sky); margin: 0 0 14px; }
+  .hero h1 { font: 800 clamp(44px, 7vw, 88px)/1 var(--display); margin: 0 0 20px; letter-spacing: -0.03em; }
+  .hero p.lead { max-width: 52ch; color: #c9d8e6; font-size: 18px; margin: 0 0 28px; }
+  .countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .countdown div { background: var(--navy-2); border-radius: 12px; padding: 14px 8px; text-align: center; }
+  .countdown strong { display: block; font: 800 36px/1 var(--display); font-variant-numeric: tabular-nums; }
+  .countdown span { font-size: 13px; color: #9fb6cc; }
+  .countdown-label { font-size: 14px; color: #9fb6cc; margin: 0 0 10px; }
+
+  section { padding-block: 80px; }
+  h2 { font: 800 clamp(32px, 4.5vw, 48px)/1.1 var(--display); margin: 0 0 10px; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); max-width: 62ch; margin: 0 0 32px; }
+
+  /* Agenda */
+  .agenda-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tabs { display: inline-flex; background: var(--mist); border-radius: 12px; padding: 4px; }
+  .tabs button { border: 0; background: transparent; padding: 10px 18px; border-radius: 9px; font: 600 15px var(--display); color: var(--muted); cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--white); color: var(--navy); box-shadow: 0 1px 3px rgba(14,42,71,.15); }
+  .track-filter { display: flex; gap: 8px; flex-wrap: wrap; }
+  .track-filter label { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; cursor: pointer; border: 1px solid #cfdbe6; border-radius: 999px; padding: 6px 12px; }
+  .track-filter input { accent-color: var(--navy); }
+  .slot-row { display: grid; grid-template-columns: 90px 1fr; gap: 20px; padding: 18px 0; border-top: 1px solid #dfe8f0; }
+  .slot-row .t { font: 600 15px var(--display); font-variant-numeric: tabular-nums; color: var(--muted); padding-top: 4px; }
+  .talks { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .talk { border: 1px solid #dfe8f0; border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; position: relative; }
+  .talk.break { background: var(--mist); border-color: transparent; color: var(--muted); }
+  .talk .track { font-size: 12px; font-weight: 600; color: var(--c); }
+  .talk h3 { margin: 0; font: 600 17px/1.3 var(--display); }
+  .talk .who { font-size: 14px; color: var(--muted); }
+  .talk button.save { justify-self: start; margin-top: 4px; border: 1px solid #cfdbe6; background: var(--white); border-radius: 8px; padding: 5px 10px; font: 500 13px var(--body); cursor: pointer; color: var(--navy); }
+  .talk.saved { border-color: var(--navy); box-shadow: inset 4px 0 0 var(--navy); }
+  .talk.saved button.save { background: var(--navy); color: var(--white); border-color: var(--navy); }
+  .talk[data-track="Frontend"] { --c: #2a7ab8; }
+  .talk[data-track="Backend"] { --c: #8a5cc2; }
+  .talk[data-track="Career"] { --c: #c2563f; }
+  .conflict { font-size: 12px; color: var(--coral); }
+
+  .mine { margin-top: 28px; background: var(--mist); border-radius: 16px; padding: 20px 22px; }
+  .mine h3 { margin: 0 0 8px; font: 600 18px var(--display); }
+  .mine ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+  .mine p { margin: 0; color: var(--muted); }
+
+  /* Speakers */
+  .speakers { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 24px; }
+  .sp { display: grid; gap: 4px; }
+  .avatar { aspect-ratio: 1; border-radius: 16px; background: var(--bg); display: grid; place-items: center; font: 800 44px var(--display); color: var(--navy); margin-bottom: 8px; }
+  .sp strong { font: 600 17px var(--display); }
+  .sp span { font-size: 14px; color: var(--muted); }
+
+  /* Tickets */
+  .tickets-section { background: var(--mist); }
+  .tickets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .ticket { background: var(--white); border-radius: 16px; padding: 24px; display: grid; gap: 10px; align-content: start; border: 2px solid transparent; }
+  .ticket.pop { border-color: var(--navy); }
+  .ticket h3 { margin: 0; font: 600 20px var(--display); }
+  .ticket .price { font: 800 36px var(--display); font-variant-numeric: tabular-nums; }
+  .ticket .price small { font: 400 14px var(--body); color: var(--muted); }
+  .ticket ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 15px; display: grid; gap: 4px; }
+  .ticket .left { font-size: 13px; color: var(--coral); font-weight: 600; }
+  .stepper { display: inline-flex; align-items: center; border: 1px solid #cfdbe6; border-radius: 10px; overflow: hidden; justify-self: start; }
+  .stepper button { width: 38px; height: 38px; border: 0; background: var(--white); font-size: 20px; cursor: pointer; color: var(--navy); }
+  .stepper output { min-width: 34px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .checkout { margin-top: 24px; background: var(--navy); color: var(--white); border-radius: 16px; padding: 22px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .checkout strong { font: 800 28px var(--display); font-variant-numeric: tabular-nums; }
+  .checkout span { color: #9fb6cc; font-size: 14px; display: block; }
+
+  footer { padding-block: 32px; color: var(--muted); font-size: 14px; border-top: 1px solid #dfe8f0; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  @media (max-width: 860px) {
+    .hero-body { grid-template-columns: 1fr; }
+    .tickets { grid-template-columns: 1fr; }
+    .slot-row { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="nav">
+      <a class="logo" href="#">Steppe<span>.js</span></a>
+      <a class="btn btn-sky" href="#tickets">Get tickets</a>
+    </div>
+    <div class="hero-body">
+      <div>
+        <p class="when">20–21 November 2026 · Almaty, Kazakhstan</p>
+        <h1>Two days of JavaScript, no sales pitches.</h1>
+        <p class="lead">24 talks across frontend, backend and career tracks, from engineers who ship to millions of users. Build your own schedule below and save it on this device.</p>
+        <a class="btn btn-sky" href="#agenda">Build my schedule</a>
+      </div>
+      <div>
+        <p class="countdown-label">Doors open in</p>
+        <div class="countdown" id="countdown" aria-live="off">
+          <div><strong id="cd-d">0</strong><span>days</span></div>
+          <div><strong id="cd-h">0</strong><span>hours</span></div>
+          <div><strong id="cd-m">0</strong><span>minutes</span></div>
+          <div><strong id="cd-s">0</strong><span>seconds</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="agenda">
+    <div class="wrap">
+      <div class="agenda-head">
+        <div>
+          <h2>Agenda</h2>
+          <p class="sub" style="margin:0">Save talks to build your schedule. We'll flag two talks at the same time.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Conference day">
+          <button role="tab" aria-selected="true" data-day="1">Fri, 20 Nov</button>
+          <button role="tab" aria-selected="false" data-day="2">Sat, 21 Nov</button>
+        </div>
+      </div>
+      <div class="track-filter" role="group" aria-label="Tracks">
+        <label><input type="checkbox" value="Frontend" checked> Frontend</label>
+        <label><input type="checkbox" value="Backend" checked> Backend</label>
+        <label><input type="checkbox" value="Career" checked> Career</label>
+      </div>
+      <div id="agenda-list" style="margin-top:16px"></div>
+      <div class="mine" aria-live="polite">
+        <h3>My schedule</h3>
+        <div id="mine"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Speakers</h2>
+      <p class="sub">A few of the people on stage this year.</p>
+      <div class="speakers" id="speakers"></div>
+    </div>
+  </section>
+
+  <section class="tickets-section" id="tickets">
+    <div class="wrap">
+      <h2>Tickets</h2>
+      <p class="sub">Prices include lunch both days, coffee, and talk recordings. Team discount of 10% applies automatically for 5+ tickets.</p>
+      <div class="tickets" id="ticket-list"></div>
+      <div class="checkout">
+        <div><strong id="total">0 ₸</strong><span id="total-note">Choose how many tickets you need</span></div>
+        <button class="btn btn-sky" id="buy" disabled>Continue to payment</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Steppe.js</span><span>Demo project · design and code by Yuriy S.</span></div></footer>
+
+<script>
+// Countdown
+const START = new Date("2026-11-20T09:00:00+05:00");
+function tick() {
+  let ms = Math.max(0, START - new Date());
+  const d = Math.floor(ms / 864e5); ms -= d * 864e5;
+  const h = Math.floor(ms / 36e5); ms -= h * 36e5;
+  const m = Math.floor(ms / 6e4); ms -= m * 6e4;
+  const s = Math.floor(ms / 1e3);
+  [["d", d], ["h", h], ["m", m], ["s", s]].forEach(([k, v]) => document.getElementById("cd-" + k).textContent = String(v).padStart(2, "0"));
+}
+tick(); setInterval(tick, 1000);
+
+// Agenda data
+const TALKS = [
+  { id: "a1", day: 1, time: "09:30", track: "All", title: "Opening keynote: the boring parts of JavaScript that matter", who: "Madina Seitkali" },
+  { id: "a2", day: 1, time: "10:30", track: "Frontend", title: "Shipping without a framework in 2026", who: "Oleg Petrov" },
+  { id: "a3", day: 1, time: "10:30", track: "Backend", title: "Node.js streams for people who avoid them", who: "Aidos Nurlanov" },
+  { id: "a4", day: 1, time: "10:30", track: "Career", title: "Your first freelance client", who: "Kamila Ospanova" },
+  { id: "b0", day: 1, time: "12:00", track: "Break", title: "Lunch", who: "" },
+  { id: "a5", day: 1, time: "13:00", track: "Frontend", title: "CSS container queries in real products", who: "Elena Kim" },
+  { id: "a6", day: 1, time: "13:00", track: "Backend", title: "Postgres is probably enough", who: "Daniyar Akhmetov" },
+  { id: "a7", day: 1, time: "14:30", track: "Frontend", title: "Accessibility audits in one afternoon", who: "Sara Lindqvist" },
+  { id: "a8", day: 1, time: "14:30", track: "Career", title: "Code review that people thank you for", who: "Ruslan Bekov" },
+  { id: "a9", day: 1, time: "16:00", track: "Backend", title: "Queues, retries and the 3am page", who: "Ivan Sokolov" },
+  { id: "c1", day: 2, time: "09:30", track: "All", title: "Keynote: what 10 years of npm installs taught us", who: "Jonas Weber" },
+  { id: "c2", day: 2, time: "10:30", track: "Frontend", title: "Animations that respect the user", who: "Aliya Zhakupova" },
+  { id: "c3", day: 2, time: "10:30", track: "Backend", title: "Auth you won't regret", who: "Marat Iskakov" },
+  { id: "b1", day: 2, time: "12:00", track: "Break", title: "Lunch", who: "" },
+  { id: "c4", day: 2, time: "13:00", track: "Frontend", title: "Testing UI without flaky tests", who: "Nurlan Sadykov" },
+  { id: "c5", day: 2, time: "13:00", track: "Career", title: "From junior to the person people ask", who: "Gulnara Tulegenova" },
+  { id: "c6", day: 2, time: "14:30", track: "Backend", title: "Edge functions: when, and when not", who: "Pavel Orlov" },
+  { id: "c7", day: 2, time: "16:00", track: "All", title: "Closing panel and lightning talks", who: "Everyone" },
+];
+const KEY = "steppejs-schedule";
+let saved = new Set();
+try { saved = new Set(JSON.parse(localStorage.getItem(KEY) || "[]")); } catch {}
+let day = 1;
+
+function persist() { try { localStorage.setItem(KEY, JSON.stringify([...saved])); } catch {} }
+
+function renderAgenda() {
+  const tracks = [...document.querySelectorAll(".track-filter input:checked")].map(i => i.value);
+  const list = TALKS.filter(t => t.day === day && (t.track === "All" || t.track === "Break" || tracks.includes(t.track)));
+  const times = [...new Set(list.map(t => t.time))];
+  document.getElementById("agenda-list").innerHTML = times.map(time => {
+    const inSlot = list.filter(t => t.time === time);
+    const savedHere = inSlot.filter(t => saved.has(t.id));
+    return `<div class="slot-row"><div class="t">${time}</div><div class="talks">${inSlot.map(t => t.track === "Break"
+      ? `<div class="talk break"><h3>${t.title}</h3></div>`
+      : `<article class="talk ${saved.has(t.id) ? "saved" : ""}" data-track="${t.track}">
+          <span class="track">${t.track === "All" ? "Main stage" : t.track}</span>
+          <h3>${t.title}</h3><span class="who">${t.who}</span>
+          ${saved.has(t.id) && savedHere.length > 1 ? '<span class="conflict">Clashes with another saved talk</span>' : ""}
+          <button class="save" data-id="${t.id}" aria-pressed="${saved.has(t.id)}">${saved.has(t.id) ? "Saved" : "Save talk"}</button>
+        </article>`).join("")}</div></div>`;
+  }).join("");
+  renderMine();
+}
+function renderMine() {
+  const mine = TALKS.filter(t => saved.has(t.id)).sort((a, b) => a.day - b.day || a.time.localeCompare(b.time));
+  document.getElementById("mine").innerHTML = mine.length
+    ? `<ol>${mine.map(t => `<li>${t.day === 1 ? "Fri" : "Sat"} ${t.time} — ${t.title}</li>`).join("")}</ol>`
+    : "<p>No talks saved yet. Use “Save talk” on anything that looks interesting.</p>";
+}
+document.querySelector(".tabs").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  day = +b.dataset.day;
+  document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", x === b));
+  renderAgenda();
+});
+document.querySelector(".track-filter").addEventListener("change", renderAgenda);
+document.getElementById("agenda-list").addEventListener("click", e => {
+  const b = e.target.closest(".save"); if (!b) return;
+  saved.has(b.dataset.id) ? saved.delete(b.dataset.id) : saved.add(b.dataset.id);
+  persist(); renderAgenda();
+});
+
+// Speakers
+const SPEAKERS = [
+  ["Madina Seitkali", "Staff engineer, Kaspi", "#cfe9fb"], ["Jonas Weber", "npm maintainer", "#ffd9d3"],
+  ["Elena Kim", "Design systems lead", "#e3dcf5"], ["Aidos Nurlanov", "Backend engineer", "#d6f0e3"],
+  ["Sara Lindqvist", "Accessibility consultant", "#fdeac2"], ["Daniyar Akhmetov", "Database engineer", "#cfe9fb"],
+  ["Kamila Ospanova", "Freelance developer", "#ffd9d3"], ["Ivan Sokolov", "SRE", "#e3dcf5"],
+];
+document.getElementById("speakers").innerHTML = SPEAKERS.map(([n, r, bg]) =>
+  `<div class="sp"><div class="avatar" style="--bg:${bg}" aria-hidden="true">${n.split(" ").map(w => w[0]).join("")}</div><strong>${n}</strong><span>${r}</span></div>`).join("");
+
+// Tickets
+const TICKETS = [
+  { id: "student", name: "Student", price: 25000, left: 18, perks: ["Both days", "Student ID at the door"] },
+  { id: "regular", name: "Regular", price: 60000, left: 140, perks: ["Both days", "Lunch and coffee", "Talk recordings"], pop: true },
+  { id: "vip", name: "Supporter", price: 120000, left: 9, perks: ["Everything in Regular", "Speakers' dinner", "Your name on the website"] },
+];
+const qty = { student: 0, regular: 0, vip: 0 };
+const fmt = n => n.toLocaleString("ru-RU") + " ₸";
+function renderTickets() {
+  document.getElementById("ticket-list").innerHTML = TICKETS.map(t => `
+    <div class="ticket ${t.pop ? "pop" : ""}">
+      <h3>${t.name}</h3>
+      <div class="price">${fmt(t.price)} <small>per person</small></div>
+      <ul>${t.perks.map(p => `<li>${p}</li>`).join("")}</ul>
+      ${t.left < 20 ? `<span class="left">Only ${t.left} left</span>` : ""}
+      <div class="stepper"><button data-dec="${t.id}" aria-label="One less ${t.name}">−</button><output>${qty[t.id]}</output><button data-inc="${t.id}" aria-label="One more ${t.name}">+</button></div>
+    </div>`).join("");
+  const count = Object.values(qty).reduce((a, b) => a + b, 0);
+  let sum = TICKETS.reduce((s, t) => s + t.price * qty[t.id], 0);
+  const team = count >= 5;
+  if (team) sum *= .9;
+  document.getElementById("total").textContent = fmt(Math.round(sum));
+  document.getElementById("total-note").textContent = count ? `${count} ${count === 1 ? "ticket" : "tickets"}${team ? " · team discount 10% applied" : count >= 3 ? ` · add ${5 - count} more for the team discount` : ""}` : "Choose how many tickets you need";
+  document.getElementById("buy").disabled = !count;
+}
+document.getElementById("ticket-list").addEventListener("click", e => {
+  const inc = e.target.dataset.inc, dec = e.target.dataset.dec;
+  if (inc) { const t = TICKETS.find(x => x.id === inc); qty[inc] = Math.min(qty[inc] + 1, t.left); }
+  if (dec) qty[dec] = Math.max(0, qty[dec] - 1);
+  renderTickets();
+});
+document.getElementById("buy").onclick = e => { e.target.textContent = "Demo: payment step goes here"; };
+
+renderAgenda(); renderTickets();
+</script>
+</body>
+</html>
