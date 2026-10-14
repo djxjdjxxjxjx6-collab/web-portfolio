@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yuriy S. — Web projects</title>
+<meta name="description" content="Live demo websites by Yuriy S.: restaurant, gym, conference, photographer portfolio and online course.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #f4f5f7; --ink: #15181d; --muted: #5f6672; --line: #dfe2e7; --accent: #2f5bd3; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 "Manrope", system-ui, sans-serif; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 64px max(20px, env(safe-area-inset-left, 0px)); }
+  h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.1; margin: 0 0 12px; font-weight: 800; }
+  p.lead { color: var(--muted); max-width: 60ch; margin: 0 0 40px; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  li a { display: grid; grid-template-columns: 1fr auto; gap: 4px 24px; padding: 22px 0; border-top: 1px solid var(--line); text-decoration: none; color: inherit; }
+  li:last-child a { border-bottom: 1px solid var(--line); }
+  li a:hover h2 { color: var(--accent); }
+  li a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  h2 { margin: 0; font-size: 22px; font-weight: 800; }
+  .what { color: var(--muted); grid-column: 1; }
+  .stack { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-size: 14px; color: var(--muted); text-align: right; }
+  footer { margin-top: 40px; color: var(--muted); font-size: 14px; }
+  footer a { color: var(--accent); }
+  @media (max-width: 600px) { li a { grid-template-columns: 1fr; } .stack { grid-column: 1; grid-row: auto; text-align: left; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Web projects by Yuriy S.</h1>
+  <p class="lead">Five working demo sites, each built from scratch with HTML, CSS and vanilla JavaScript. Open any of them on your phone and click around: everything interactive actually works.</p>
+  <ul>
+    <li><a href="ramen-restaurant/"><h2>Sumi Ramen Bar</h2><span class="what">Restaurant site with a filterable menu, live pickup order with totals, and table booking with available time slots.</span><span class="stack">Menu filters · Cart · Booking form</span></a></li>
+    <li><a href="gym-club/"><h2>Ironhouse Strength Club</h2><span class="what">Gym site with a weekly class timetable, class details with spots left, and a membership price calculator.</span><span class="stack">Timetable · Modal · Calculator</span></a></li>
+    <li><a href="dev-conference/"><h2>Steppe.js 2026</h2><span class="what">Conference landing page with a live countdown, two-day agenda, personal schedule saved in the browser, and ticket checkout.</span><span class="stack">Countdown · localStorage · Tickets</span></a></li>
+    <li><a href="photographer/"><h2>Aino Lehtinen Photography</h2><span class="what">Photographer portfolio with a masonry gallery, keyboard and swipe lightbox, print configurator with live preview, and an enquiry form.</span><span class="stack">Gallery · Lightbox · Configurator</span></a></li>
+    <li><a href="js-course/"><h2>First Commit</h2><span class="what">Online course landing page with a code playground that runs JavaScript, a 10-week curriculum, an interactive quiz and pricing.</span><span class="stack">Playground · Quiz · Pricing toggle</span></a></li>
+  </ul>
+  <footer>Hire me on <a href="https://www.upwork.com/freelancers/~0103ff24268665ed14">Upwork</a> · Code on <a href="https://github.com/djxjdjxxjxjx6-collab/web-portfolio">GitHub</a></footer>
+</div>
+</body>
+</html>
